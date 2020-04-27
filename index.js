@@ -1,7 +1,7 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 
-var connetion = mysql.createConnection({
+var connection = mysql.createConnection({
     host: "localhost",
     prot: 3306,
     user: "root",
@@ -38,7 +38,7 @@ const updateQ = [
     }
 ]
 
-connetion.connect(function (err){
+connection.connect(function (err){
     if (err) throw err;
     //put the starter function execution in here please
 })
@@ -59,7 +59,7 @@ const initilize = () => {
                     updateFunction();
                     break;
                 case "Exit":
-                    connetion.end();
+                    connection.end();
             }
         })
 
@@ -124,7 +124,7 @@ const addDepartment = () => {
             message: "What new Department would you like to add?"
         }        
     ]).then(({name}) => {
-        connetion.query("INSERT INTO department SET ?", {
+        connection.query("INSERT INTO department SET ?", {
             name
         }, (err) => {
             if (err) throw err;
@@ -151,7 +151,7 @@ const addRole = () => {
             message: "What is the id of the new Role"
         }
     ]).then(({title, salary, department_id}) => {
-        connetion.query("INSERT INTO person_role SET ?", {
+        connection.query("INSERT INTO person_role SET ?", {
             title: title,
             salary: salary,
             department_id: department_id
@@ -184,7 +184,7 @@ const addEmployee = () => {
             message: "What is their Managers Id? (1 if they are a manager)"
         }
     ]).then(({first_name, last_name, role_id, manager_id}) => {
-        connetion.query("INSERT INTO employee SET ?", {
+        connection.query("INSERT INTO employee SET ?", {
             first_name,
             last_name,
             role_id,
@@ -198,7 +198,7 @@ const addEmployee = () => {
 } //done
 
 const viewDepartment = () => {
-connetion.query("SELECT * FROM department", (err, data) => {
+connection.query("SELECT * FROM department", (err, data) => {
     if(err) throw err;
 
     for(const department of data) {
@@ -209,7 +209,7 @@ connetion.query("SELECT * FROM department", (err, data) => {
 } //done
 
 const viewRole = () => {
-connetion.query("SELECT * FROM person_role", (err, data) => {
+connection.query("SELECT * FROM person_role", (err, data) => {
     if(err) throw err;
 
     for(const role of data) {
@@ -220,7 +220,7 @@ connetion.query("SELECT * FROM person_role", (err, data) => {
 } //done
 
 const viewEmployee = () => {
-connetion.query("SELECT * FROM employee", (err, data) => {
+connection.query("SELECT * FROM employee", (err, data) => {
     if(err) throw err;
 
     for(const employee of data) {
