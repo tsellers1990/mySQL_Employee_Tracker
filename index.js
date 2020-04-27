@@ -13,7 +13,7 @@ const q1Init = [
     {
         name: "baseInit",
         type: "list",
-        choices: ["Add", "View", "Update"]
+        choices: ["Add", "View", "Update", "Exit"]
     }
 ]
 const addQ = [
@@ -58,10 +58,12 @@ const initilize = () => {
                 case "Update":
                     updateFunction();
                     break;
+                case "Exit":
+                    connetion.end();
             }
         })
 
-}
+}//done
 
 const addFunction = () => {
     inquirer 
@@ -78,7 +80,7 @@ const addFunction = () => {
                 break;
         }
     })
-}
+}//done
 
 const viewFunction = () => {
     inquirer 
@@ -95,7 +97,7 @@ const viewFunction = () => {
                 break;
         }
     })  
-}
+}//done
 
 const updateFunction = () => {
     inquirer 
@@ -112,31 +114,121 @@ const updateFunction = () => {
                 break;
         }
     })
-}
+} //done
 
 const addDepartment = () => {
- 
-}
+ inquirer
+    .prompt([
+        {
+            name: "name",
+            message: "What new Department would you like to add?"
+        }        
+    ]).then(({name}) => {
+        connetion.query("INSERT INTO department SET ?", {
+            name
+        }, (err) => {
+            if (err) throw err;
+            console.log(`${name} submitted to the DB`);
+        })
+        initilize();
+    }) 
+
+} //done
 
 const addRole = () => {
-    
-}
+    inquirer
+    .prompt([
+        {
+            name: "title",
+            message: "What new Title would you like to add?"
+        },
+        {
+            name: "salary",
+            message: "What salary does this Role carry?"
+        },
+        {
+            name: "department_id",
+            message: "What is the id of the new Role"
+        }
+    ]).then(({title, salary, department_id}) => {
+        connetion.query("INSERT INTO person_role SET ?", {
+            title: title,
+            salary: salary,
+            department_id: department_id
+        }, (err) => {
+            if (err) throw err;
+            console.log(`${title} submitted to the DB`);
+            
+        })
+        initilize();
+    })
+} //done
 
 const addEmployee = () => {
-    
-}
+    inquirer
+    .prompt([
+        {
+            name: "first_name",
+            message: "What is the employee's first name?"
+        },
+        {
+            name: "last_name",
+            message: "What is the employee's last name?"
+        },
+        {
+            name: "role_id",
+            message: "What is the id of the their Role"
+        },
+        {
+            name: "manager_id",
+            message: "What is their Managers Id? (1 if they are a manager)"
+        }
+    ]).then(({first_name, last_name, role_id, manager_id}) => {
+        connetion.query("INSERT INTO employee SET ?", {
+            first_name,
+            last_name,
+            role_id,
+            manager_id
+        }, (err) => {
+            if (err) throw err;
+            console.log(`${first_name} ${last_name} submitted to the DB`);
+        })
+        initilize();
+    })  
+} //done
 
 const viewDepartment = () => {
+connetion.query("SELECT * FROM department", (err, data) => {
+    if(err) throw err;
 
-}
+    for(const department of data) {
+        console.log(`Department: ${department.name}`)
+    }
+    initilize();
+})
+} //done
 
 const viewRole = () => {
-    
-}
+connetion.query("SELECT * FROM person_role", (err, data) => {
+    if(err) throw err;
+
+    for(const role of data) {
+        console.log(`Role: ${role.title}`)
+    }
+    initilize();
+}) 
+} //done
 
 const viewEmployee = () => {
-    
-}
+connetion.query("SELECT * FROM employee", (err, data) => {
+    if(err) throw err;
+
+    for(const employee of data) {
+        console.log(`Employee: ${employee.first_name} ${employee.last_name}`)
+    }
+    initilize();
+})
+} //done
 
 const updateDepartment = () => {
     

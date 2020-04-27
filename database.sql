@@ -28,7 +28,7 @@ INSERT INTO department (name) VALUES("Test");
 SELECT * FROM department;
 
 INSERT INTO person_role (title, salary, department_id) VALUES("Test", 420.69, 1);
-SELECT * FROM department;
+SELECT * FROM person_role;
 
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES("Tymothy", "Sellers", 1, 1);
