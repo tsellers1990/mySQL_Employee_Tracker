@@ -1,6 +1,8 @@
 const inquirer = require("inquirer");
 const mysql = require("mysql");
 
+var dynamicListQ = [];
+
 var connection = mysql.createConnection({
     host: "localhost",
     prot: 3306,
@@ -231,7 +233,47 @@ connection.query("SELECT * FROM employee", (err, data) => {
 } //done
 
 const updateDepartment = () => {
+connection.query("SELECT * FROM department", (err, data) => {
+    if (err) throw err;
+
+    for (const department of data) {
+        // dynamicList += JSON.stringify(department);
+        console.log(`response ${department.id}: ${department.name}`)
+        dynamicListQ.push(department.name);
+
+    }
+
+    console.log(dynamicListQ)
+    inquirer
+        .prompt ([
+        {
+            name:"dynamicList",
+            type: "list",
+            choices: dynamicListQ
+        }
+    ]).then((response) => {
+        // connection.query("")
+        console.log(response)
+    }, (err) =>{if (err) throw err} )
+
+        // .then(({first_name, last_name, role_id, manager_id}) => {
+        //     connection.query("INSERT INTO employee SET ?", {
+        //         first_name,
+        //         last_name,
+        //         role_id,
+        //         manager_id
+        //     }, (err) => {
+        //         if (err) throw err;
+        //         console.log(`${first_name} ${last_name} submitted to the DB`);
+        //     })
     
+    
+})//query to the DB
+//we'll need more questions to ask the user to see what they want to change...
+//consider appending the current list to an array, then allowing the user to select from...
+//that array!
+
+///dynamicList
 }
 
 const  updateRole = () => {
