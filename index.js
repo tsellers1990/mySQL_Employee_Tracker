@@ -247,13 +247,26 @@ connection.query("SELECT * FROM department", (err, data) => {
     inquirer
         .prompt ([
         {
-            name:"dynamicList",
+            name:"name",
             type: "list",
             choices: dynamicListQ
+        },
+        {
+            name: "newName",
+            type: "input",
+            message: "What would you like to rename this department to?"
         }
     ]).then((response) => {
-        // connection.query("")
-        console.log(response)
+        console.log(response.name)
+
+        connection.query("UPDATE department SET ? WHERE ?",
+        [{
+            name : response.newName
+        },
+        {
+            name: response.name
+        }
+    ])
     }, (err) =>{if (err) throw err} )
 
         // .then(({first_name, last_name, role_id, manager_id}) => {
