@@ -296,10 +296,16 @@ connection.query("SELECT * FROM person_role", (err,data) => {
                 inquirer
                     .prompt ([
                         {
-                            name: "oldInfo",
+                            name: "selector",
                             type: 'list',
                             choices: ["title", "salary", "department_id"]
-                            // choices: dynamicListQ2
+                        },
+                        {
+                            name:"oldInfo",
+                            type: "list",
+                            message: "Which piece do you want to change?",
+                            choices: dynamicListQ2
+                             
                         },
                         {
                             name: "newInfo",
@@ -307,20 +313,155 @@ connection.query("SELECT * FROM person_role", (err,data) => {
                             message: "Change that info to what?"
                         }
                     ]).then (responseNest => {
-                        
-                        switch(responseNest) {
-                            case "title":
-                                return
-                            
+                        switch(responseNest.selector) {
+                            case "title":                               
+                                // update person_role set newInfo where title=dynamiclistchoice
+                                connection.query("UPDATE person_role SET ? WHERE ?", 
+                                [
+                                    {
+                                        title : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        title : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                break;
+
+                            case "salary":
+                                connection.query("UPDATE person_role SET ? WHERE ?", 
+                                [
+                                    {
+                                        salary : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        salary : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                break;
+                            case "department_id":
+                                connection.query("UPDATE person_role SET ? WHERE ?", 
+                                [
+                                    {
+                                        department_id : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        department_id : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                
+                                break;
+
+                                
                         } initilize();
-                    },(err) =>{if (err) throw err})
+                    },(err) => {if (err) throw err})
             })
         })
-})
-}
+    }) 
+    }
 
 const updateEmployee = () => {
-    
+connection.query("SELECT * FROM employee", (err,data) => {
+    if (err) throw err;
+
+    dynamicListQ = [];
+    dynamicListQ2 = [];
+    for (const employee of data) {
+        dynamicListQ.push(employee.first_name);
+    }
+    inquirer
+        .prompt ([
+            {
+                name: "name",
+                type: "list",
+                choices: dynamicListQ
+            }
+        ]).then(response => {
+            connection.query(`SELECT * FROM employee WHERE first_name = ${JSON.stringify(response.name)}`, (err,data) => {
+                if (err) throw err;
+
+                for (const info of data) {
+                    dynamicListQ2.push(info.first_name);
+                    dynamicListQ2.push(info.last_name);
+                    dynamicListQ2.push(info.role_id);
+                    dynamicListQ2.push(info.manager_id);
+                }
+                inquirer
+                    .prompt ([
+                        {
+                            name: "selector",
+                            type: 'list',
+                            choices: ["first_name", "last_name", "role_id", "manager_id"]
+                        },
+                        {
+                            name:"oldInfo",
+                            type: "list",
+                            message: "Which piece do you want to change?",
+                            choices: dynamicListQ2
+                                
+                        },
+                        {
+                            name: "newInfo",
+                            type: "prompt",
+                            message: "Change that info to what?"
+                        }
+                    ]).then (responseNest => {
+                        switch(responseNest.selector) {
+                            case "first_name":                               
+                                // update person_role set newInfo where title=dynamiclistchoice
+                                connection.query("UPDATE first_name SET ? WHERE ?", 
+                                [
+                                    {
+                                        first_name : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        first_name : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                break;
+
+                            case "last_name":
+                                connection.query("UPDATE last_name SET ? WHERE ?", 
+                                [
+                                    {
+                                        last_name : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        last_name : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                break;
+                            case "role_id":
+                                connection.query("UPDATE role_id SET ? WHERE ?", 
+                                [
+                                    {
+                                        role_id : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        role_id : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                
+                                break;
+                            case "manager_id":
+                                connection.query("UPDATE manager_id SET ? WHERE ?", 
+                                [
+                                    {
+                                        manager_id : responseNest.newInfo //~~~~~set db title to newTitle 
+                                    },
+                                    {
+                                        manager_id : responseNest.oldInfo //~~~~~~//where title in db = user selection
+                                    }
+                                ]);
+                                
+                                break;
+                            
+
+                                
+                        } initilize();
+                    },(err) => {if (err) throw err})
+            })
+        })
+    }) 
 }
 
 
