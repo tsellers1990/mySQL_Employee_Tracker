@@ -27,9 +27,9 @@ CREATE TABLE employee (
 INSERT INTO department (name) VALUES("Test");
 SELECT * FROM department;
 
-INSERT INTO person_role (title, salary, department_id) VALUES("Test", 420.69, 1);
-SELECT * FROM person_role;
+INSERT INTO person_role (title, salary, department_id) VALUES("Test", 1, 1);
+SELECT * FROM person_role WHERE title = "Test";
 
 
-INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES("Tymothy", "Sellers", 1, 1);
+INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES("Test", "Test", 1, 1);
 SELECT * FROM employee;

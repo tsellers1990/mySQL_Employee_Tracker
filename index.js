@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const mysql = require("mysql");
 
 var dynamicListQ = [];
+var dynamicListQ2 = [];
 
 var connection = mysql.createConnection({
     host: "localhost",
@@ -236,14 +237,10 @@ const updateDepartment = () => {
 connection.query("SELECT * FROM department", (err, data) => {
     if (err) throw err;
 
+    dynamicListQ = []
     for (const department of data) {
-        // dynamicList += JSON.stringify(department);
-        console.log(`response ${department.id}: ${department.name}`)
         dynamicListQ.push(department.name);
-
     }
-
-    console.log(dynamicListQ)
     inquirer
         .prompt ([
         {
@@ -257,46 +254,86 @@ connection.query("SELECT * FROM department", (err, data) => {
             message: "What would you like to rename this department to?"
         }
     ]).then((response) => {
-        console.log(response.name)
 
         connection.query("UPDATE department SET ? WHERE ?",
         [{
-            name : response.newName
+            name : response.newName //set db name to newName 
         },
         {
-            name: response.name
+            name: response.name //where name in db = user se
         }
     ])
-    }, (err) =>{if (err) throw err} )
-
-        // .then(({first_name, last_name, role_id, manager_id}) => {
-        //     connection.query("INSERT INTO employee SET ?", {
-        //         first_name,
-        //         last_name,
-        //         role_id,
-        //         manager_id
-        //     }, (err) => {
-        //         if (err) throw err;
-        //         console.log(`${first_name} ${last_name} submitted to the DB`);
-        //     })
-    
-    
-})//query to the DB
-//we'll need more questions to ask the user to see what they want to change...
-//consider appending the current list to an array, then allowing the user to select from...
-//that array!
-
-///dynamicList
-}
+    initilize()
+    }, (err) =>{if (err) throw err} )    
+})
+}//done
 
 const  updateRole = () => {
-    
+connection.query("SELECT * FROM person_role", (err,data) => {
+    if (err) throw err;
+
+    dynamicListQ = [];
+    dynamicListQ2 = [];
+    for (const role of data) {
+        dynamicListQ.push(role.title);
+    }
+    inquirer
+        .prompt ([
+            {
+                name: "title",
+                type: "list",
+                choices: dynamicListQ
+            }
+        ]).then(response => {
+            connection.query(`SELECT * FROM person_role WHERE title = ${JSON.stringify(response.title)}`, (err,data) => {
+                if (err) throw err;
+
+                for (const info of data) {
+                    dynamicListQ2.push(info.title);
+                    dynamicListQ2.push(info.salary);
+                    dynamicListQ2.push(info.department_id);
+                }
+                inquirer
+                    .prompt ([
+                        {
+                            name: "oldInfo",
+                            type: 'list',
+                            choices: ["title", "salary", "department_id"]
+                            // choices: dynamicListQ2
+                        },
+                        {
+                            name: "newInfo",
+                            type: "prompt",
+                            message: "Change that info to what?"
+                        }
+                    ]).then (responseNest => {
+                        
+                        switch(responseNest) {
+                            case "title":
+                                return
+                            
+                        } initilize();
+                    },(err) =>{if (err) throw err})
+            })
+        })
+})
 }
 
 const updateEmployee = () => {
     
 }
 
+
+//update person_role set newInfo where title=dynamiclistchoice
+// connection.query("UPDATE person_role SET ? WHERE ?", 
+//                                 [
+//                                     {
+//                                         title : responseNest.newInfo //~~~~~set db title to newTitle 
+//                                     },
+//                                     {
+//                                         title : responseNes.oldInfo //~~~~~~//where title in db = user selection
+//                                     }
+//                                 ]);
 
 
 //we'll fs need to have a shitload of functions here. this is a big project
